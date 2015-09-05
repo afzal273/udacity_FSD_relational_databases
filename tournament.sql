@@ -9,6 +9,8 @@
 
 -- CREATE database tournament;
 
+-- \c tournament
+
 CREATE TABLE players(
 Player_id serial PRIMARY KEY,
 Name text
@@ -34,4 +36,5 @@ CREATE VIEW player_standings AS
 (SELECT players.player_id, players.name, standings. wins, standings.matches
 FROM players, standings
 WHERE players.player_id = standings.player_id
-ORDER BY standings.netscore DESC, standings.matches DESC);
+ORDER BY standings.netscore DESC, standings.matches DESC
+);
