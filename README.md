@@ -11,14 +11,9 @@ To run you will also need a machine with postgres running and python psycopg2 mo
 In the machine, navigate to /vagrant/tournament folder and then run the following -
 
 ```
-# Create tournament db
-psql -c 'CREATE database tournament;'
-
-# Connect to tournament db
-\c tournament
-
-# Create all required tables/views
-tournament.sql
+# Create tournament db and all required views/tables
+psql 
+\i tournament.sql
 
 # Exit from psql
 \q

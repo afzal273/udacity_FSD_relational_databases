@@ -77,8 +77,8 @@ def updateMatchesTable(winner, loser):
     :param loser: loser of the current match
 
     """
-    insert_matches_sql = "INSERT INTO matches (id1, id2, winner, loser) VALUES  (%s, %s, %s, %s);"
-    data = (winner, loser, winner, loser)
+    insert_matches_sql = "INSERT INTO matches (id1, id2, winner) VALUES  (%s, %s, %s);"
+    data = (winner, loser, winner)
     runQuery(insert_matches_sql, commit=True, data=data)
 
 

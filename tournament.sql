@@ -7,9 +7,10 @@
 -- these lines here.
 
 
--- CREATE database tournament;
+DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE tournament;
 
--- \c tournament
+\c tournament
 
 CREATE TABLE players(
 Player_id serial PRIMARY KEY,
@@ -20,8 +21,7 @@ CREATE TABLE matches(
 Match_number serial,
 Id1 INTEGER REFERENCES players(Player_id),
 Id2 INTEGER REFERENCES players(Player_id),
-winner INTEGER REFERENCES players(Player_id),
-loser INTEGER REFERENCES players(Player_id)
+winner INTEGER REFERENCES players(Player_id)
 );
 
 CREATE TABLE standings (
