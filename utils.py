@@ -29,7 +29,7 @@ def runQuery(sql, commit=None, rtype=None, data=None):
     # Fetch result according to return type
     if rtype == 'count':
         # if fetching count, fetch and return first row
-        result = cursor.fetchone()[0]
+        result = int(cursor.fetchone()[0])
     elif rtype == 'one_row':
         # if fetching all rows, return all rows
         result = cursor.fetchone()
@@ -70,24 +70,26 @@ def getStats(player_id):
     return runQuery(get_stats_sql, rtype='rows', data=data)
 
 
-def updateMatchesTable(winner, loser):
+def updateMatchesTable(winner, loser, isTie):
     """
     Updates the matches table with winner and loser
     :param winner: winner of the current match
     :param loser: loser of the current match
+    :param isTie: Is the reported match a tie?
 
     """
-    insert_matches_sql = "INSERT INTO matches (id1, id2, winner) VALUES  (%s, %s, %s);"
-    data = (winner, loser, winner)
+    insert_matches_sql = "INSERT INTO matches (id1, id2, winner, isTie) VALUES  (%s, %s, %s, %s);"
+    data = (winner, loser, winner, isTie)
     runQuery(insert_matches_sql, commit=True, data=data)
 
 
 def updateStandingsTable(player_id, result=None):
     """
     Update standings table with outcome of a match or when new player is registered
+    Give 1 point for a win, -1 for a loss and 0.5 for a tie to the netscore
 
     :param player_id:
-    :param result: winner, loser or new_player
+    :param result: winner, loser, tie or new_player
     """
     data = (player_id,)
     update_sql = None
@@ -95,9 +97,11 @@ def updateStandingsTable(player_id, result=None):
         update_sql = "UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1 WHERE player_id = %s;"
     elif result == 'loser':
         update_sql = "UPDATE standings SET matches = matches +1, losses = losses + 1, netscore = netscore - 1 WHERE player_id = %s;"
+    elif result == 'tie':
+        update_sql = "UPDATE standings SET matches = matches +1, ties = ties + 1, netscore = netscore + 0.5  WHERE player_id = %s;"
     elif result == 'new_player':
-        update_sql = "INSERT INTO standings (player_id, matches, wins, losses, netscore) VALUES  (%s, 0, 0, 0, 0);"
+        update_sql = "INSERT INTO standings (player_id, matches, wins, ties, losses, netscore) VALUES  (%s, 0, 0, 0, 0, 0);"
     else:
-        return "Result should be winner, loser or new_player"
+        return "Result should be winner, loser, tie or new_player"
 
     runQuery(update_sql, commit=True, data=data)

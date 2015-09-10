@@ -21,19 +21,21 @@ CREATE TABLE matches(
 Match_number serial,
 Id1 INTEGER REFERENCES players(Player_id),
 Id2 INTEGER REFERENCES players(Player_id),
-winner INTEGER REFERENCES players(Player_id)
+winner INTEGER REFERENCES players(Player_id),
+isTie BOOLEAN
 );
 
 CREATE TABLE standings (
 Player_id INTEGER REFERENCES players(Player_id),
 Matches INTEGER,
 Wins INTEGER,
+Ties INTEGER,
 Losses INTEGER,
-NetScore INTEGER
+NetScore DECIMAL
 );
 
 CREATE VIEW player_standings AS
-(SELECT players.player_id, players.name, standings. wins, standings.matches
+(SELECT players.player_id, players.name, standings. wins, standings.ties, standings.matches
 FROM players, standings
 WHERE players.player_id = standings.player_id
 ORDER BY standings.netscore DESC, standings.matches DESC

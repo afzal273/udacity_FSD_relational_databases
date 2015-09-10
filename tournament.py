@@ -16,7 +16,7 @@ def deleteMatches():
     resetMatchNumberSequence()
 
     # Make all match records 0 in standings table
-    update_standings_sql = "UPDATE standings SET matches = 0, wins = 0, losses = 0, netscore = 0;"
+    update_standings_sql = "UPDATE standings SET matches = 0, wins = 0, ties = 0, losses = 0, netscore = 0;"
     runQuery(update_standings_sql, commit=True)
 
 
@@ -38,7 +38,7 @@ def deletePlayers():
 def countPlayers():
     """Returns the number of players currently registered."""
     sql = "SELECT count(*) as num from players"
-    return int(runQuery(sql, rtype="count"))
+    return runQuery(sql, rtype="count")
 
 
 def registerPlayer(name):
@@ -55,8 +55,7 @@ def registerPlayer(name):
     data = (name,)
 
     # Grab the player_id
-    player_id = (runQuery(insert_player_sql, rtype='one_row',
-                          commit=True, data=data,))[0]
+    player_id = (runQuery(insert_player_sql, rtype='one_row', commit=True, data=data,))[0]
 
     # Insert a row in the standings table with 0s so it can return swiss
     # pairings for the first time
@@ -70,7 +69,7 @@ def playerStandings():
     tied for first place if there is currently a tie.
 
     Returns:
-      A list of tuples, each of which contains (id, name, wins, matches):
+      A list of tuples, each of which contains (id, name, wins, ties, matches):
         id: the player's unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of matches the player has won
@@ -79,18 +78,24 @@ def playerStandings():
     return runQuery("select * from player_standings", rtype="rows")
 
 
-def reportMatch(winner, loser):
+def reportMatch(winner, loser, isTie=False):
     """Records the outcome of a single match between two players.
 
+    :param isTie:
     Args:
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
+      isTie: is the match a tie?
     """
 
     # Update matches table and standings table
-    updateMatchesTable(winner, loser)
-    updateStandingsTable(winner, 'winner')
-    updateStandingsTable(loser, 'loser')
+    updateMatchesTable(winner, loser, isTie)
+    if isTie:
+        updateStandingsTable(winner, 'tie')
+        updateStandingsTable(loser, 'tie')
+    else:
+        updateStandingsTable(winner, 'winner')
+        updateStandingsTable(loser, 'loser')
 
 
 def swissPairings():

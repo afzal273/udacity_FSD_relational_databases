@@ -67,9 +67,9 @@ def testStandingsBeforeMatches():
                          "they have played any matches.")
     elif len(standings) > 2:
         raise ValueError("Only registered players should appear in standings.")
-    if len(standings[0]) != 4:
-        raise ValueError("Each playerStandings row should have four columns.")
-    [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
+    if len(standings[0]) != 5:
+        raise ValueError("Each playerStandings row should have five columns.")
+    [(id1, name1, wins1, ties1, matches1), (id2, name2, wins2, ties2, matches2)] = standings
     if matches1 != 0 or matches2 != 0 or wins1 != 0 or wins2 != 0:
         raise ValueError(
             "Newly registered players should have no matches or wins.")
@@ -90,15 +90,17 @@ def testReportMatches():
     [id1, id2, id3, id4] = [row[0] for row in standings]
     reportMatch(id1, id2)
     reportMatch(id3, id4)
-    standings = playerStandings()
-    for (i, n, w, m) in standings:
-        if m != 1:
-            raise ValueError("Each player should have one match recorded.")
-        if i in (id1, id3) and w != 1:
-            raise ValueError("Each match winner should have one win recorded.")
-        elif i in (id2, id4) and w != 0:
-            raise ValueError("Each match loser should have zero wins recorded.")
-    print "7. After a match, players have updated standings."
+    reportMatch(id1, id2, isTie=True)
+    reportMatch(id3, id4, isTie=True)
+    print standings
+    for (i, n, w, t, m) in standings:
+        if m != 2:
+            raise ValueError("Each player should have two matches recorded.")
+        if i in (id1, id3) and w != 1 and t !=1:
+            raise ValueError("Each match winner should have one win and one tie recorded.")
+        elif i in (id2, id4) and w != 0 and t!=1:
+            raise ValueError("Each match loser should have zero wins and one tie recorded.")
+    print "7. After two match, players have updated standings."
 
 
 def testPairings():
