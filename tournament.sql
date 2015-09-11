@@ -14,7 +14,7 @@ CREATE DATABASE tournament;
 
 CREATE TABLE players(
 Player_id serial PRIMARY KEY,
-Name text
+Name TEXT
 );
 
 CREATE TABLE matches(

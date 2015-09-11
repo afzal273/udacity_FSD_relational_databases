@@ -92,7 +92,7 @@ def testReportMatches():
     reportMatch(id3, id4)
     reportMatch(id1, id2, isTie=True)
     reportMatch(id3, id4, isTie=True)
-    print standings
+    standings = playerStandings()
     for (i, n, w, t, m) in standings:
         if m != 2:
             raise ValueError("Each player should have two matches recorded.")
