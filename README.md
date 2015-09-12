@@ -23,7 +23,6 @@ python tournament_test.py
 
 ```
 
-I haven't worked on the extra credit requirements yet, I have a few questions and will attend office hours next week and then work on them. I would like to use feedback from the current submission to also work on the extra credit.
 
 Extra credit - 
 
