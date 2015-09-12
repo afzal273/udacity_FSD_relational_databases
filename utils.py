@@ -94,13 +94,17 @@ def updateStandingsTable(player_id, result, tournament_id):
     data = (player_id, tournament_id)
 
     if result == 'winner':
-        update_sql = "UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1 WHERE player_id = %s AND tournament_id = %s;"
+        update_sql = """UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1
+                        WHERE player_id = %s AND tournament_id = %s;"""
     elif result == 'loser':
-        update_sql = "UPDATE standings SET matches = matches +1, losses = losses + 1, netscore = netscore - 1 WHERE player_id = %s AND tournament_id = %s;"
+        update_sql = """UPDATE standings SET matches = matches +1, losses = losses + 1, netscore = netscore - 1
+                        WHERE player_id = %s AND tournament_id = %s;"""
     elif result == 'tie':
-        update_sql = "UPDATE standings SET matches = matches +1, ties = ties + 1, netscore = netscore + 0.5  WHERE player_id = %s AND tournament_id = %s;"
+        update_sql = """UPDATE standings SET matches = matches +1, ties = ties + 1, netscore = netscore + 0.5
+                        WHERE player_id = %s AND tournament_id = %s;"""
     elif result == 'new_player':
-        update_sql = "INSERT INTO standings (player_id, matches, wins, ties, losses, netscore, tournament_id) VALUES  (%s, 0, 0, 0, 0, 0, %s);"
+        update_sql = """INSERT INTO standings (player_id, matches, wins, ties, losses, netscore, tournament_id)
+                        VALUES  (%s, 0, 0, 0, 0, 0, %s);"""
     else:
         return "Result should be winner, loser, tie or new_player"
 

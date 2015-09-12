@@ -14,7 +14,8 @@ def deleteMatches(tournament_id=None):
     if tournament_id:
         # Make all match records 0 in standings table and delete all matches only for the tournament_id specified
         update_matches_sql = "DELETE FROM matches WHERE tournament_id=(%s);"
-        update_standings_sql = "UPDATE standings SET matches = 0, wins = 0, ties = 0, losses = 0, netscore = 0 WHERE tournament_id=(%s);"
+        update_standings_sql = """UPDATE standings SET matches = 0, wins = 0, ties = 0, losses = 0, netscore = 0
+                                  WHERE tournament_id=(%s);"""
         data = (tournament_id,)
 
     else:
@@ -58,7 +59,8 @@ def countPlayers(tournament_id=None):
 
     # If tournament id is specified return count only for the tournament
     if tournament_id:
-        return runQuery("SELECT count(*) as num from player_tournaments WHERE tournament_id = %s;", data=(tournament_id,), rtype='count')
+        return runQuery("""SELECT count(*) as num from player_tournaments
+                        WHERE tournament_id = %s;""", data=(tournament_id,), rtype='count')
     else:
         return runQuery("SELECT count(*) as num from players;", rtype='count')
 
@@ -93,7 +95,8 @@ def registerPlayerToTournament(player_id, tournament_id):
     """
 
     # insert into tournaments if the tournament is not already in there
-    insert_into_touranments_sql = "INSERT INTO tournaments (Tournament_id) SELECT (%s) WHERE NOT EXISTS (SELECT * FROM tournaments WHERE Tournament_id = %s);"
+    insert_into_touranments_sql = """INSERT INTO tournaments (Tournament_id) SELECT (%s) WHERE NOT EXISTS
+                                     (SELECT * FROM tournaments WHERE Tournament_id = %s);"""
     data = (tournament_id, tournament_id)
     runQuery(insert_into_touranments_sql, data=data, commit=True)
 
