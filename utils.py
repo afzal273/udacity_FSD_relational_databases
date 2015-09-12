@@ -59,18 +59,18 @@ def resetPlayerNumberSequence():
     runQuery("ALTER SEQUENCE players_player_id_seq RESTART WITH 1;")
 
 
-def getStats(player_id):
+def getStats(player_id, tournament_id):
     """
     Retuns the current stats for the player from the standings table
     :param player_id: player_id to get stats for
     :return stats for the player_id
     """
-    get_stats_sql = "SELECT * FROM standings WHERE player_id = %s;"
-    data = (player_id,)
+    get_stats_sql = "SELECT * FROM standings WHERE player_id = %s AND tournament_id = %s;"
+    data = (player_id, tournament_id)
     return runQuery(get_stats_sql, rtype='rows', data=data)
 
 
-def updateMatchesTable(winner, loser, isTie):
+def updateMatchesTable(winner, loser, isTie, tournament_id):
     """
     Updates the matches table with winner and loser
     :param winner: winner of the current match
@@ -83,7 +83,7 @@ def updateMatchesTable(winner, loser, isTie):
     runQuery(insert_matches_sql, commit=True, data=data)
 
 
-def updateStandingsTable(player_id, result=None):
+def updateStandingsTable(player_id, result, tournament_id):
     """
     Update standings table with outcome of a match or when new player is registered
     Give 1 point for a win, -1 for a loss and 0.5 for a tie to the netscore
@@ -91,16 +91,16 @@ def updateStandingsTable(player_id, result=None):
     :param player_id:
     :param result: winner, loser, tie or new_player
     """
-    data = (player_id,)
+    data = (player_id, tournament_id)
     update_sql = None
     if result == 'winner':
-        update_sql = "UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1 WHERE player_id = %s;"
+        update_sql = "UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1 WHERE player_id = %s AND tournament_id = %s;"
     elif result == 'loser':
-        update_sql = "UPDATE standings SET matches = matches +1, losses = losses + 1, netscore = netscore - 1 WHERE player_id = %s;"
+        update_sql = "UPDATE standings SET matches = matches +1, losses = losses + 1, netscore = netscore - 1 WHERE player_id = %s AND tournament_id = %s;"
     elif result == 'tie':
-        update_sql = "UPDATE standings SET matches = matches +1, ties = ties + 1, netscore = netscore + 0.5  WHERE player_id = %s;"
+        update_sql = "UPDATE standings SET matches = matches +1, ties = ties + 1, netscore = netscore + 0.5  WHERE player_id = %s AND tournament_id = %s;"
     elif result == 'new_player':
-        update_sql = "INSERT INTO standings (player_id, matches, wins, ties, losses, netscore) VALUES  (%s, 0, 0, 0, 0, 0);"
+        update_sql = "INSERT INTO standings (player_id, matches, wins, ties, losses, netscore, tournament_id) VALUES  (%s, 0, 0, 0, 0, 0, %s);"
     else:
         return "Result should be winner, loser, tie or new_player"
 
