@@ -78,8 +78,8 @@ def updateMatchesTable(winner, loser, isTie, tournament_id):
     :param isTie: Is the reported match a tie?
 
     """
-    insert_matches_sql = "INSERT INTO matches (id1, id2, winner, isTie) VALUES  (%s, %s, %s, %s);"
-    data = (winner, loser, winner, isTie)
+    insert_matches_sql = "INSERT INTO matches (id1, id2, winner, isTie, tournament_id) VALUES  (%s, %s, %s, %s, %s);"
+    data = (winner, loser, winner, isTie, tournament_id)
     runQuery(insert_matches_sql, commit=True, data=data)
 
 
@@ -92,7 +92,7 @@ def updateStandingsTable(player_id, result, tournament_id):
     :param result: winner, loser, tie or new_player
     """
     data = (player_id, tournament_id)
-    update_sql = None
+
     if result == 'winner':
         update_sql = "UPDATE standings SET matches = matches +1, wins = wins + 1, netscore = netscore +1 WHERE player_id = %s AND tournament_id = %s;"
     elif result == 'loser':

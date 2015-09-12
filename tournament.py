@@ -12,8 +12,7 @@ def deleteMatches(tournament_id=None):
     data = None
 
     if tournament_id:
-        # Make all match records 0 in standings table and delete all matches
-        # only for the tournament_id specified
+        # Make all match records 0 in standings table and delete all matches only for the tournament_id specified
         update_matches_sql = "DELETE FROM matches WHERE tournament_id=(%s);"
         update_standings_sql = "UPDATE standings SET matches = 0, wins = 0, ties = 0, losses = 0, netscore = 0 WHERE tournament_id=(%s);"
         data = (tournament_id,)
@@ -30,8 +29,7 @@ def deleteMatches(tournament_id=None):
 def deletePlayers(tournament_id=None):
     """Remove player records from the database for all players or for a tournament"""
 
-    # Delete rows from players, matches and standings tables for tournament_id
-    # specified
+    # Delete rows from players, matches and standings tables for tournament_id specified
     if tournament_id:
         runQuery("DELETE FROM matches WHERE tournament_id = %s;",
                  data=(tournament_id,), commit=True)
@@ -51,8 +49,7 @@ def deletePlayers(tournament_id=None):
         # Reset player_id sequence to start from 1 when player table is cleared
         resetPlayerNumberSequence()
 
-        # Reset match_number sequence to start from 1 when matches table is
-        # cleared
+        # Reset match_number sequence to start from 1 when matches table is cleared
         resetMatchNumberSequence()
 
 
